@@ -1,0 +1,65 @@
+﻿
+body {
+    font-family: Arial, sans-serif;
+}
+
+.content {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+canvas {
+    border: 10px solid black;
+}
+
+fieldset {
+    display: inline-block;
+    vertical-align: top;
+}
+
+#grpInitialPlacement {
+    width: 130px;
+}
+
+#speed {
+    width: 200px;
+}
+
+.controls {
+    width: 165px;
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+.controls input {
+    margin-bottom: 10px;
+    width: 135px;
+}
+
+label#lblMsg {
+    font-family: 'Times New Roman', serif;
+    vertical-align: top;
+    display: block;
+    padding: 5px;
+    min-height: 1em;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.controlsGroup {
+    text-align: center;
+}
+
+#grpInitialPlacement {
+    text-align: left;
+}
+
+.divCanvas {
+    position: relative;
+}

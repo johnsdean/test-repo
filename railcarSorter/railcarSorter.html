@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="Kriti Kafle, John Dean">
+<meta name="description" content="Train Sorter">
+<title>Railcar Sorter</title>
+<link rel="stylesheet" href="stylesheet.css" type="text/css">
+<script src="railcarSorter.js" type="text/javascript"></script>
+</head>
+
+<body>
+<div class="content">
+  <img id="railYard" src="images/railYard.jpg" style="display: none">
+  <div class="divCanvas">
+    <canvas id="canvas1" width="580" height="400"></canvas>
+    <label id="lblMsg"></label>
+  </div>
+  <div class="controlsGroup">
+    <fieldset id="grpInitialPlacement">
+      <legend>Initial Placement</legend>
+      <input type="radio" name="rdoIP" id="rdoIP1" value="0" onclick="initialPlacement(0)" checked>
+      <label for="rdoIP1">Easy</label>
+      <br>
+      <input type="radio" name="rdoIP" id="rdoIP2" value="1" onclick="initialPlacement(1)">
+      <label for="rdoIP2">Hard</label>
+      <br>
+      <input type="radio" name="rdoIP" id="btnRandomPlacement" value="Random" onclick="randomizeRailcars()">
+      <label for="btnRandomPlacement">Random</label>
+    </fieldset>
+    <div class="controls">
+      <input type="button" id="btnNextMove" value="Next Move" onclick="moveNextCar(false)">
+      <br>
+      <input type="button" id="btnAutoPlay" value="Auto Play" onclick="startAutoPlay()">
+      <input type="button" id="btnPause" value="Pause" hidden onclick="pauseAnimation()">
+      <br>
+      <input type="button" id="btnReset" value="Reset" onclick="resetRailcars()">
+      <br>
+    </div>
+    <fieldset>
+      <legend>Speed</legend>
+      <input type="range" id="speed" min="120" max="220" value="160" onchange="changeSpeed(this.value)">
+      <br>
+      <span id="txtFPS"></span>
+    </fieldset>
+  </div>
+</div>
+</body>
+</html>
