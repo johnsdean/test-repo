@@ -1,1 +1,1 @@
-To view the web pages, scroll through the folders and files at https://github.com/johnsdean/misc
+To view the web pages on this repo, go to [https://github.com/johnsdean/misc](https://github.com/johnsdean/misc) and peruse the folders and files shown there.
