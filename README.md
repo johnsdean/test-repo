@@ -10,7 +10,8 @@
 
 ## Fun Homework Projects from my Web Programming I class:
 - [Sonic the Hedgehog](hw/sonic.html)
-- [Compass Game](hw/compassGame.html)
 - [MPG Calculator](hw/mpgCalculator.html)
 - [Animal Stacking](hw/animalStacking.html)
 - [Caption Adder](hw/captionAdder.html)
+- [Compass Game](hw/compassGame.html)
+- 
