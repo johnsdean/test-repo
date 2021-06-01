@@ -8,4 +8,4 @@
 
 ## Solar Grid Website (case study in my shamelessly plugged book--Web Programming with HTML5, CSS, and JavaScript):
 
-## Fun Homework Projects:
+## Fun Homework Projects from my Web Programming I class:
