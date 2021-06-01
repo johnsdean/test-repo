@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="John Dean">
+<title>Caption Adder</title>
+<style>
+  .prompt {line-height: 200%;}
+  .imageArea {position: relative;}
+  #image {z-index: 1;}
+  #result {
+    position: absolute;
+    z-index: 2;
+    font-size: 1.5em;
+    color: white;
+  }
+</style>
+<script src="captionAdder.js"></script>
+</head>
+
+<body>
+<form>
+  <h2>What is the little alligator saying?</h2>
+  <span class="prompt">Select a caption:</span><br>
+  <input type="radio" name="caption"
+    value="Dad - that's the jerk who did it!"
+    onclick="handleTextbox(this);">
+    Dad - that's the jerk who did it!<br>
+  <input type="radio" name="caption"
+    value="Here kitty, kitty..."
+    onclick="handleTextbox(this);">
+    Here kitty, kitty...<br>
+  <input type="radio" name="caption"
+    value="What are you looking at? Someone has to steer this thing!"
+    onclick="handleTextbox(this);">
+    What are you looking at? Someone has to steer this thing!<br>
+  <input type="radio" name="caption" value="other"
+    onclick="handleTextbox(this);">
+  <input type="text" id="entry" size="60"
+    maxlength="50" disabled>
+  <br><br>
+  <input type="button" value="Add caption" onclick="addCaption(this.form);">
+</form>
+<br>
+<div class="imageArea">
+  <!-- image from http://www.lolbrary.com/content/594/thats-the-jerk-who-did-it-dad-14594.jpg -->
+  <img id="image" src="../images/alligatorDuo.png" alt="alligator duo"
+    width="600" height="350">
+  <span id="result"></span>
+</div>
+</body>
+</html>

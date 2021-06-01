@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="John Dean">
+<title>MPG Calculator</title>
+<style>
+  form > * {line-height: 200%;}
+  .italics {font-style: italic;}
+</style>
+
+<script>
+  // This function calculates and displays miles per gallon
+  // fuel efficiency between two fill-ups.
+
+  function calculateMPG(form) {
+    var error = "";         // error message
+    var odom1, odom2;       // text box controls for odometer values
+    var odom1Num, odom2Num; // numbers in odometer text box controls
+    var gallons;            // text box control for gallons
+    var mpg;                // calculated mpg number
+
+    odom1 = form.elements["odom1"];
+    odom2 = form.elements["odom2"];
+    gallons = form.elements["gallons"];
+
+    if (!odom1.checkValidity()) {
+      error += "Invalid entry for the first odometer reading." +
+        " Must be an integer between " + odom1.min + " and " +
+        odom1.max + ".\n\n";
+    }
+    if (!odom2.checkValidity()) {
+      error += "Invalid entry for the second odometer reading." +
+        " Must be an integer between " + odom2.min + " and " +
+        odom2.max + ".\n\n";
+    }
+
+    if (odom1.checkValidity() && odom2.checkValidity()) {
+      odom1Num = odom1.valueAsNumber;
+      odom2Num = odom2.valueAsNumber;
+      if (odom1Num > odom2Num) {
+        error += "Invalid odometer entries. The first" +
+          " value cannot be greater than the second value.\n\n";
+      }
+    } // end if
+
+    if (!gallons.checkValidity()) {
+      error += "Invalid entry for gallons. Must be between " +
+        gallons.min + " and " + gallons.max +
+        " with a maximum of one decimal place.\n\n";
+    }
+
+    if (error == "") {
+      mpg = (odom2Num - odom1Num) / gallons.valueAsNumber;
+      document.getElementById("mpg").value = mpg.toFixed(1);
+    }
+    else {
+      document.getElementById("mpg").value = "";
+
+      // The following code deletes a blank line at the bottom of
+      // the alert dialog.
+       alert(error.substring(0, error.length - 2));
+    }
+  } // end calculateMPG
+</script>
+</head>
+
+<body>
+<h2>Miles Per Gallon Calculator</h2>
+<p>
+  The next two times you go to the gas station, fill up your tank
+  completely and record your odometer's mileage values. At the
+  second fill-up, record the number of gallons purchased. Then
+  enter your three recorded values below and click the
+  <span class="italics">Calculate</span> button.
+</p>
+<form>
+  <div>
+    <label for="odom1">First odometer reading (in miles): </label>
+    <input type="number" id="odom1"
+       min="0" max="400000" step="1" required>
+  </div>
+  <div>
+    <label for="odom2">Second odometer reading (in miles): </label>
+    <input type="number" id="odom2"
+       min="0" max="400000" step="1" required>
+  </div>
+  <div>
+    <label for="gallons">Gallons: </label>
+    <input type="number" id="gallons"
+       min=".1" max="40" step=".1" required>
+  </div>
+  <div>
+    Calculated MPG:
+    <input type="text" id="mpg" size="4" disabled>
+  </div>
+  <br>
+  <div>
+    <input type="button" value="Calculate"
+      onclick = "calculateMPG(this.form);">
+    <input type="reset" value="Reset">
+  </div>
+</form>
+</body>
+</html>

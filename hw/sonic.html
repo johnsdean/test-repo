@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="John Dean">
+<title>Sonic Running</title>
+<style>
+  h1, h3 {text-align: center;}
+  td {border: thin solid;}
+  .center {display: flex; justify-content: center;}
+  .gap {width: 50px; border: none;}
+</style>
+</head>
+
+<body>
+<h1>Sonic the Hedgehog</h1>
+<h3>Displaying each image with the PNG file's natural
+  dimensions (width="120" height="156")</h3>
+<div class="center">
+  <table>
+    <tr><th>PNG Format</th><th></th><th>SVG Format</th></tr>
+    <tr>
+      <td><img src="../images/sonic.png" alt="Sonic running"
+        width="120" height="156"></td>
+      <td class="gap"></td> <!-- can't adjust table cell margins -->
+      <td><img src="../images/sonic.svg" alt="Sonic running"
+        width="120" height="156"></td>
+    </tr>
+  </table>
+</div>
+<br>
+<h3>Displaying the same images as above, but with
+  expanded dimensions (width="400" height="400")</h3>
+<div class="center">
+  <table>
+    <tr><th>PNG Format</th><th></th><th>SVG Format</th></tr>
+    <tr>
+      <td><img src="../images/sonic.png" alt="Sonic running"
+        width="400" height="400"></td>
+      <td class="gap"></td> <!-- can't adjust table cell margins -->
+      <td><img src="../images/sonic.svg" alt ="Sonic running"
+        width="400" height="400"></td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

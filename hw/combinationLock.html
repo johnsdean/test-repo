@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name= "author" content="John Dean">
+<title>Combination Lock</title>
+<style>
+  .centered {
+    width: 500px;
+    text-align: center;
+  }
+  #target {width: 3em;}  /* EXTRA CREDIT */
+</style>
+<script src="combinationLock.js"></script>
+</head>
+
+<body onload="initializeCanvas();">
+<canvas id="canvas" width="500" height="370">
+</canvas>
+<br><br>
+<form class="centered">
+  <input type="button" value="Nudge left"
+    onclick="nudgeLeft();">
+  <input type="button" value="Nudge right"
+    onclick="nudgeRight();">
+
+  <!-- EXTRA CREDIT: -->
+  <br><br>
+  Target:
+  <input type="number" id="target" value="0"
+    min="0" max="39" step="1" required>
+  &nbsp;&nbsp;
+  <input type="button" value="Left to target"
+    onclick="leftToTarget(this.form);">
+  <input type="button" value="Right to target"
+    onclick="rightToTarget(this.form);">
+</form>
+</body>
+</html>
