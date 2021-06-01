@@ -9,7 +9,8 @@
 ## Lawrence, Kansas Solar Grid Website (case study in my shamelessly plugged book--Web Programming with HTML5, CSS, and JavaScript):
 
 ## Fun Homework Projects from my Web Programming I class:
+- [Compass Game](hw/compassGame_EC.html)
 - [MPG Calculator](hw/mpgCalculator.html)
 - [Animal Stacking](hw/animalStacking.html)
 - [Caption Adder](hw/captionAdder.html)
-- [Compass Game](hw/compassGame.html)
+- [Combination Lock](hw/combinationLock.html)
