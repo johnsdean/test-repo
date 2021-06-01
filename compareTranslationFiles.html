@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="author" content="John Dean">
+<title>Compare Translation Files</title>
+<style>
+  .top {color: forestgreen;}
+  .table {
+    display: table;
+    border-spacing: 10px;
+    border: thin solid blue;
+  }
+  .row {display: table-row;}
+  .row > * {display: table-cell;}
+  .prompt {text-align: right;}
+  #en-warning, #other-warning {
+    color: red;
+  }
+  #en-results, #other-results, #suspicious-lines, #copied-file {
+    display: none; white-space: pre;
+  }
+</style>
+
+<!-- <script src="compareTranslationFiles.js"></script> -->
+<script>
+
+/*******************************************************
+* compareJsonFiles.js
+* John Dean
+*
+* This JavaScript was originally in an external file, but
+* in order to have it run on DAP's GitHub wiki using
+* GitHub's preview tool (https://htmlpreview.github.io/),
+* I had to move the JavaScript to this script container.
+* Apparently, GitHub's preview tool doesn't allow access
+* to external JavaScript files.
+* These functions support the comparison of JSON translation
+* files.
+*******************************************************/
+
+var enFile = null;     // selected en.json file
+var enJson;            // converted to JSON object
+var otherFile = null;  // selected *.json file
+var otherJson;         // converted to JSON object
+
+//****************************************************
+
+// This function reads the user-selected file and checks
+// to make sure its filename is valid and it uses proper
+// JSON syntax.
+
+function readFile(form, fileType, filePickerEvent) {
+  var file;        // file object from file picker
+  var filename;    // lowercase name of file
+  var reader;      // for reading a file
+  var warning;     // container that displays invalid file input
+  var surplusKeysInOtherBtn; // button that displays surplus lines
+  var suspiciousLinesBtn; // button that displays suspicious lines
+  var makeCopyBtn;       // the button that creates copy of other file
+
+  form.elements["surplus-keys-in-en-btn"].disabled = true;
+  form.elements["surplus-keys-in-other-btn"].disabled = true;
+  form.elements["suspicious-lines-btn"].disabled = true;
+  form.elements["make-copy-btn"].disabled = true;
+
+  if (fileType == "en") {
+    warning = document.getElementById("en-warning");
+  }
+  else {
+    warning = document.getElementById("other-warning");
+  }
+
+  // If user selects cancel, that will change the file picker's
+  // display to "No file chosen," so need to null the chosen file
+  // and clear any warnings.
+  // Selecting cancel causes the file picker to return "".
+  if (filePickerEvent.target.value == "") {
+    warning.innerHTML = "";
+    if (fileType == "en") {
+      enFile = null;
+    }
+    else {
+      otherFile = null;
+    }
+  } // end if user cancels
+
+  // Handle normal case, when user did not cancel.
+  else {
+    file = filePickerEvent.target.files[0];
+    filename = file.name.toLowerCase();
+
+    if (fileType == "en") {
+      if (filename == "en.json") {
+        warning.innerHTML = "";
+      }
+      else {
+        enFile = null;
+        warning.innerHTML =
+          "You must select an en.json file.";
+      }
+    }
+
+    // Handle fileType == "other"
+    else {
+      if (filename == "en.json") {
+        otherFile = null;
+        warning.innerHTML =
+          "You must not select an en.json file.";
+      }
+      else if (filename.split(".")[1] != "json") {
+        otherFile = null;
+        warning.innerHTML =
+          "You must select a *.json file.";
+      }
+      else {
+        warning.innerHTML = "";
+      }
+    }
+
+    if (warning.innerHTML == "") {
+      reader = new FileReader();
+      reader.readAsText(file, "UTF-8");
+
+      // Add a filename property so the onload event handler can
+      // know which file is being read.
+      reader.filename = filename;
+
+      // The file can be parsed only after it has loaded, which
+      // takes some time. Thus the callback mechanism...
+      reader.onload = function (readerEvent) {
+        if (readerEvent.target.filename == "en.json") {
+          enFile = readerEvent.target;
+          try {
+            // JSON.parse removes \'s in keys and values
+            enJson = JSON.parse(enFile.result);
+          }
+          catch (err) {
+            enJson = null;
+            warning.innerHTML =
+              "JSON syntax error in " + enFile.filename;
+          }
+        } // end if en file
+
+        else {
+          otherFile = readerEvent.target;
+          try {
+            // JSON.parse removes \'s in keys and values
+            otherJson = JSON.parse(otherFile.result);
+          }
+          catch (err) {
+            otherJson = null;
+            warning.innerHTML =
+              "JSON syntax error in " + otherFile.filename;
+          }
+        } // end else
+
+        // If valid files, then enable the buttons that process
+        // the files.
+
+        if (enJson != null && otherJson != null) {
+          form.elements["surplus-keys-in-en-btn"].disabled = false;
+
+          surplusKeysInOtherBtn =
+            form.elements["surplus-keys-in-other-btn"];
+          surplusKeysInOtherBtn.disabled = false;
+          surplusKeysInOtherBtn.value =
+            surplusKeysInOtherBtn.value.replace(
+              /\S*\.json/, otherFile.filename);
+
+          // /\S*\.json/ is a regular expression that matches any
+          // number of non-whitespace characters, dot, then json
+
+          suspiciousLinesBtn =
+            form.elements["suspicious-lines-btn"];
+          suspiciousLinesBtn.disabled = false;
+          suspiciousLinesBtn.value =
+            suspiciousLinesBtn.value.replace(
+              /\S*\.json/, otherFile.filename);
+
+          makeCopyBtn = form.elements["make-copy-btn"];
+          makeCopyBtn.disabled = false;
+          makeCopyBtn.value =
+            makeCopyBtn.value.replace(
+              /\S*\.json/, otherFile.filename);
+        }
+      } // end reader.onload
+
+      reader.onerror = function (e) {
+        console.log("error reading file");
+      }
+    } // end if warning == ""
+  } // end else user did not cancel
+} // end function readFile
+
+//****************************************************
+
+function findSurplusKeys(form, fileType) {
+  if (fileType == "en") {
+    form.elements["en-msg"].innerText =
+      "Here are the en.json lines (with key numbers inserted\n" +
+      "at the left) whose keys are missing in the " +
+      otherFile.filename + " file.\n" +
+      "If you click the \"Make improved copy\" button, these\n" +
+      "lines will be inserted in the generated file.";
+    form.elements["en-results"].style.display = "block";
+  }
+  else {
+    form.elements["other-msg"].innerText =
+      "Here are the " + otherFile.filename +
+      " lines (with key numbers inserted\n" +
+      "at the left) whose keys are missing in the en.json file.\n" +
+      "If you click the \"Make improved copy\" button, these\n" +
+      "lines will NOT be inserted in the generated file,\n" +
+      "and they should be investigated manually.";
+
+    form.elements["other-results"].style.display = "block";
+  }
+
+  displaySurplusLines(form, fileType);
+} // end findSurplusKeys
+
+//****************************************************
+
+// This function finds the keys that are in the file
+// specified by fileType and not in the other file.
+// For each of those surplus keys, display the line where
+// the key comes from and preface with the line's number.
+
+function displaySurplusLines(form, fileType) {
+  var results;      // container that displays results
+  var surplusKeys;  // keys in en.json file
+  var compareKeys;  // keys in other file
+  var surplusLines; // lines in en.json that are not in other
+  var line;         // one of the surplus lines
+  var keyNum;       // the key number for each printed line
+  var value;        // one of the values in the JSON object
+
+  if (fileType == "en") {
+    results = form.elements["en-results"];
+    surplusKeys = Object.keys(enJson);
+    compareKeys = Object.keys(otherJson);
+    surplusJson = enJson;
+  }
+  else {
+    results = form.elements["other-results"];
+    surplusKeys = Object.keys(otherJson);
+    compareKeys = Object.keys(enJson);
+    surplusJson = otherJson;
+  }
+  surplusLines = "";
+
+  keyNum = 0;
+
+  surplusKeys.forEach(
+    function(key) {
+      keyNum++;
+      if (compareKeys.indexOf(key) == -1) {
+        // JSON.parse removes \'s in keys and values, and now
+        // we have to add them back because we want the user
+        // to see the actual code in the JSON file.
+        value = surplusJson[key].replace(/"/g, '\\"');
+        key = key.replace(/"/g, '\\"');
+
+        // Build a key-value line with key number at start
+        // and newline at the end.
+        line = keyNum.toString().padEnd(6) +
+          "\"" + key + "\": \"" + value +
+          "\",\n";
+
+        surplusLines += line;
+      }
+    }
+  ); // end forEach
+
+  if (surplusLines == "") {
+    results.value = "There are no missing lines.";
+  }
+  else {
+    results.value = surplusLines;
+  }
+} // end displaysurplusLines
+
+//****************************************************
+
+// This function compares same-key lines in *.json and en.json
+// and displays the *.json lines whose values are identical
+// because that suggests that the other-language value needs
+// to be translated.
+// But only flag the line if the value contains alpha text
+// that is not part of an interpolation.
+
+function findSuspicious(form) {
+  var results;         // container that displays results
+  var enKeys;          // keys in en.json file
+  var suspiciousLines; // lines in *.json that are suspicious
+  var line;            // one of the suspicious lines
+  var keyNum;          // the key number for each printed line
+  var otherValue;      // a value in the other-language file
+
+  form.elements["suspicious-lines-msg"].innerText =
+    "Here are the " + otherFile.filename +
+    " lines whose values (in terms of alpha text) are the same" +
+    " as in the en.json file.\n" +
+    "Key numbers have been inserted at the left";
+
+  results = form.elements["suspicious-lines"];
+  results.style.display = "block";
+  enKeys = Object.keys(enJson);
+  suspiciousLines = "";
+  keyNum = 0;
+
+  enKeys.forEach(
+    function (key) {
+      keyNum++;
+      if (key in otherJson) {
+        otherValue = otherJson[key];
+
+        if (isSuspicious(key, enJson[key], otherValue)) {
+          // JSON.parse removes \'s in keys and values, and now
+          // we have to add them back because we want the user
+          // to see the actual code in the JSON file.
+          otherValue = otherValue.replace(/"/g, '\\"');
+          key = key.replace(/"/g, '\\"');
+
+          // Build a key-value line with key number at start
+          // and newline at the end.
+          line = keyNum.toString().padEnd(6) +
+            "\"" + key + "\": \"" + otherValue +
+            "\",\n";
+
+          suspiciousLines += line;
+        }
+      }
+    }
+  ); // end forEach
+
+  if (suspiciousLines == "") {
+    results.value = "There are no suspicious values.";
+  }
+  else {
+    results.value = suspiciousLines;
+  }
+} // end findSuspicious
+
+//****************************************************
+
+// This function displays en.json's content with the other
+// file's values replacing the values in en.json.
+// For the keys in en.json that are not in the other file,
+// those keys' line are displayed with an arrow at the left.
+
+function makeCopy(form) {
+  var content;      // displayed content of proposed new JSON file
+  var enKeys;       // keys in en.json file
+  var value;        // one of the values in the JSON object
+
+  enKeys = Object.keys(enJson);
+  content = "{\n";
+
+  enKeys.forEach(
+    function(key) {
+
+      // Build a key-value line with newline at the end.
+      if (key in otherJson) {
+        value = otherJson[key];
+
+        if (isSuspicious(key, enJson[key], value)) {
+          // start the line with a right arrow character
+          content += "\u27A4  ";
+        }
+        else {
+          content += "  ";
+        }
+      }
+      else {
+        value = enJson[key];
+        content += "\u27A4  ";
+      }
+
+      // JSON.parse removes \'s in keys and values, and now
+      // we have to add them back because in the textarea,
+      // we want to display code that a user can copy as valid JSON.
+      key = key.replace(/"/g, '\\"');
+      value = value.replace(/"/g, '\\"');
+
+      content +=
+        "\"" + key + "\": \"" + value + "\",\n";
+    }
+  ); // end forEach
+
+  // remove trailing comma
+  content = content.substring(0, content.length - 2);
+  content += "\n}";
+
+  form.elements["copied-file-msg"].innerText =
+    "Here is the proposed new " + otherFile.filename + " file.\n" +
+    "Newly inserted lines and suspicious lines are marked with" +
+    " arrows (\u27A4) at the left.";
+
+  form.elements["copied-file"].style.display = "block";
+  form.elements["copied-file"].value = content;
+} // end makeCopy
+
+//****************************************************
+
+// This function determines whether for a given key, the values
+// in the English file and other-language file are identical.
+// But only return true if the value contains one or more letters
+// that are not part of an interpolation.
+
+function isSuspicious(key, enFileValue, otherFileValue) {
+  var regex;   // regular expression for examining value
+
+  // Search for any letters that are not within interpolation braces.
+  // For an explanation, see:
+  // https://stackoverflow.com/questions/42526951/regex-to-match-text-but-not-if-contained-in-brackets
+  regex = /(?<!\{\{)[a-zA-Z]+(?![\w\s]*\}\})/;
+
+  return otherFileValue.match(regex) != null &&
+    otherFileValue == enFileValue;
+} // end isSuspicious
+</script>
+</head>
+
+<body>
+<h1 class="top">Translation File Fixer Upper</h1>
+<div>
+  Select an en.json file and another translation file
+  (fr.json, es.json, ar.json, etc.).<br>
+  The en.json file serves as the template for the other-language
+  translation file.
+</div>
+<br>
+
+<!-- Put remaining elements in one form to make access easier
+  and more effecient. -->
+<form>
+<div class="table">
+  <div class="row">
+    <label class="prompt" for="enFile">en.json file:</label>
+    <span>
+      <input type="file" id="en-file" accept=".json"
+        onchange="readFile(this.form, 'en', event);">
+    </span>
+    <span id="en-warning"></span>
+  </div>
+  <div class="row">
+    <label class="prompt" for="otherFile">Other file:</label>
+    <span>
+      <input type="file" id="other-file" accept=".json"
+        onchange="readFile(this.form, 'other', event);">
+    </span>
+    <span id="other-warning"></span>
+  </div>
+</div>
+<br>
+
+<div class="table">
+  <div class="row">
+    <span>
+      <input type="button" value="Surplus keys in en.json"
+        id="surplus-keys-in-en-btn" disabled
+        onclick="findSurplusKeys(this.form, 'en');">
+    </span>
+    <span>
+      <input type="button" value="Surplus keys in *.json file"
+        id="surplus-keys-in-other-btn" disabled
+        onclick="findSurplusKeys(this.form, 'other');">
+    </span>
+  </div>
+  <div class="row">
+    <output id="en-msg"></output>
+    <output id="other-msg"></output>
+  </div>
+  <div class="row">
+    <span>
+      <textarea id="en-results"
+        readonly rows="10" cols="50"></textarea>
+    </span>
+    <span>
+      <textarea id="other-results"
+        readonly rows="10" cols="50"></textarea>
+    </span>
+  </div>
+</div>
+<br>
+
+<div class="table">
+  <div class="row">
+    <span>
+      <input type="button"
+        value="*.json lines whose values are suspicious"
+        id="suspicious-lines-btn" disabled
+        onclick="findSuspicious(this.form);">
+    </span>
+  </div>
+  <div class="row">
+    <output id="suspicious-lines-msg"></output>
+  </div>
+  <div class="row">
+    <span>
+      <textarea id="suspicious-lines"
+        readonly rows="10" cols="104"></textarea>
+    </span>
+  </div>
+</div>
+<br>
+
+<div class="table">
+  <div class="row">
+    <span>
+      <input type="button"
+        value="Make improved copy of *.json file"
+        id="make-copy-btn" disabled
+        onclick="makeCopy(this.form);">
+    </span>
+  </div>
+  <div class="row">
+    <output id="copied-file-msg"></output>
+  </div>
+  <div class="row">
+    <span>
+      <textarea id="copied-file"
+        readonly rows="10" cols="104"></textarea>
+    </span>
+  </div>
+</div>
+</form>
+</body>
+</html>
