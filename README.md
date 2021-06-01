@@ -1,1 +1,7 @@
-To view the web pages on this repo, go to [https://github.com/johnsdean/misc](https://github.com/johnsdean/misc) and peruse the folders and files shown there.
+# A Few Miscellaneous Web Apps I've Written
+
+## Disaster Accountability Project's Translation File Comparison and Cleanup Tool:
+[https://github.com/johnsdean/misc/compareTranslationFiles.html](https://github.com/johnsdean/misc/compareTranslationFiles.html)
+
+## Railcar Sorter that uses Canvas and a snazzed up Towers of Hanoi algorithm:
+[https://github.com/johnsdean/misc/railcarSorter.html](https://github.com/johnsdean/misc/railcarSorter.html)
