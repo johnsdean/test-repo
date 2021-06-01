@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Compass Game</title>
+<meta name="author" content="John Dean">
+<link rel="icon" href="../images/jd.gif">
+<style>
+  .table {display: table;}
+  .table > * {display: table-row;}
+  .table > * > * {
+    display: table-cell;
+    text-align: center;
+    font-size: 2em;
+    font-weight: 800;
+    margin: 15px;
+    color: red;
+  }
+  .arrow {color: blue;}
+  .italics {font-style: italic;}
+  .diagonal {transform: rotate(-45deg);}
+
+  /* The &harr; displays near the bottom. vertical-align: middle doesn't help.
+     The only thing that works is the following kludge, but then fat buttons. */
+  /* .arrow {padding-bottom: 8px;} */
+
+  /* for older browsers: */
+  /* 
+  .diagonal {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+  }
+  */
+</style>
+
+<script>
+  // This function erases the compass's directions and
+  // activates the text boxes and update button.
+
+  function restartCompass(form) {
+    form.reset();
+    document.getElementById("top").innerHTML = "";
+    document.getElementById("left").innerHTML = "";
+    document.getElementById("right").innerHTML = "";
+    document.getElementById("bottom").innerHTML = "";
+
+    form.elements["topBox"].disabled = false;
+    form.elements["leftBox"].disabled = false;
+    form.elements["rightBox"].disabled = false;
+    form.elements["bottomBox"].disabled = false;
+    form.elements["update"].disabled = false;
+  } // end restartCompass
+
+  //****************************
+
+  // This function copies the text box values to the compass's
+  // directions and disables the text boxes and update button.
+
+  function updateCompass(form) {
+    document.getElementById("top").innerHTML =
+      form.elements["topBox"].value;
+    document.getElementById("left").innerHTML =
+      form.elements["leftBox"].value;
+    document.getElementById("right").innerHTML =
+      form.elements["rightBox"].value;
+    document.getElementById("bottom").innerHTML =
+      form.elements["bottomBox"].value;
+
+    form.elements["topBox"].disabled = true;
+    form.elements["leftBox"].disabled = true;
+    form.elements["rightBox"].disabled = true;
+    form.elements["bottomBox"].disabled = true;
+    form.elements["update"].disabled = true;
+  } // end updateCompass
+
+  //****************************
+
+  // This function swaps the direction letters for the
+  // 2 passed-in positions.
+
+  function swap(direction1, direction2) {
+    var temp;  // holds direction during swap process
+
+    temp = document.getElementById(direction1).innerHTML;
+    document.getElementById(direction1).innerHTML =
+      document.getElementById(direction2).innerHTML;
+    document.getElementById(direction2).innerHTML = temp;
+  } // end swap
+
+  //****************************
+
+  // EXTRA CREDIT:
+
+  // This function randomly repositions the direction letters.
+
+  function shuffle(form) {
+    var directions =         // compass directions
+      ["N", "S", "E", "W"];
+    var j;                   // index of swapped element
+    var temp;                // helps with swap
+
+    for (var i=0; i<directions.length; i++) {
+      j = Math.floor(Math.random() * directions.length);
+      temp = directions[i];
+      directions[i] = directions[j];
+      directions[j] = temp;
+    } // end for
+
+    document.getElementById("top").innerHTML = directions[0];
+    document.getElementById("left").innerHTML = directions[1];
+    document.getElementById("right").innerHTML = directions[2];
+    document.getElementById("bottom").innerHTML = directions[3];
+  } // end shuffle
+</script>
+</head>
+
+<body>
+<noscript>
+  <p>
+    This web page uses JavaScript. For proper results,
+    you must use a web browser with JavaScript enabled.
+  </p>
+</noscript>
+<h1>Compass Game</h1>
+<p>
+  The direction letters on the "compass" are scrambled.
+  Press the arrows to properly position the direction letters.
+</p>
+
+<form>
+  <div class="table">
+    <div>
+      <!--
+        Normally, you should use a container for a table cell (and you
+        have to if there are multiple non-container cells in a row), but
+        using span to surround the button messes up the cell's CSS
+        inheritance. The workaround was ugly - having to provide
+        redundant CSS code for the button. Thus we're using the button
+        as a cell.
+      -->
+      <input type="button" class="arrow diagonal" value="&harr;"
+        onclick = "swap('top', 'left');">
+      <span id="top">E</span>
+      <span></span>
+    </div>
+    <div>
+      <span id="left">S</span>
+      <input type="button" class="arrow" value="&harr;"
+        onclick="swap('left', 'right');">
+      <span id="right">N</span>
+    </div>
+    <div>
+      <span></span>
+      <span id="bottom">W</span>
+      <input type="button" class="arrow diagonal" value="&harr;"
+        onclick="swap('bottom', 'right');">
+    </div>
+  </div> <!-- end table -->
+
+  <br><br>
+  <p>
+    To restart the game, press <span class="italics">Shuffle</span>.
+  </p>
+  <input type="button" value="Shuffle"
+    onclick="shuffle(this.form);">
+</form>
+</body>
+</html>
