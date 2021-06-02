@@ -6,7 +6,7 @@
 ## Railcar Sorter that uses HTML5 Canvas and a snazzed-up recursive Towers of Hanoi algorithm:
 [Railcar Sorter](railcarSorter/railcarSorter.html)
 
-## Lawrence, Kansas Power Grid Website (case study in my shamelessly plugged book--Web Programming with HTML5, CSS, and JavaScript):
+## Lawrence, Kansas Power Grid Website (case study in my shamelessly plugged book--_Web Programming with HTML5, CSS, and JavaScript_):
 [Lawrence Power Grid](microgrid/pages)
 
 ## A few fun homework projects from my Web Programming I class:
