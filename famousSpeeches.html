@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name= "author" content="John Dean">
+<title>Famous Speeches</title>
+<style>
+  .grid {
+    display: inline-grid;
+    grid-template-columns: repeat(4, auto);
+  }
+  .grid > header:first-of-type {
+    grid-column: 1 / span 4;
+    font-size: xx-large;
+    color: blue;
+  }
+  .grid > header:nth-of-type(n + 2) {
+    font-size: x-large;
+    color: blue;
+    background-color: moccasin;
+  }
+  .mlk {grid-row: 4 / span 2;}
+  .grid > * {
+    padding: 8px;
+    text-align: center;
+  }
+  .grid > *:nth-child(n + 2) {outline: 1px solid green;}
+
+  .grid > span {
+    background-color: aliceblue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+
+<body>
+<div class="grid">
+  <header>Famous Speeches</header>
+  <header>Orator</header>
+  <header>Title</header>
+  <header>Venue</header>
+  <header>Date</header>
+
+  <span>Mahatma Gandhi</span>
+  <span>Quit India</span>
+  <span>Bombay, India</span>
+  <span>8-8-1942</span>
+
+  <span class="mlk">Martin Luther King</span>
+  <span>I Have a Dream</span>
+  <span>Washington, D.C.</span>
+  <span>8-28-1963</span>
+  <span>The Other America</span>
+  <span>Stanford University, CA</span>
+  <span>4-14-1967</span>
+
+  <span>Greta Thunberg</span>
+  <span>How Dare You!</span>
+  <span>United Nations Climate Summit</span>
+  <span>9-23-2019</span>
+</div>
+</body>
+</html>
